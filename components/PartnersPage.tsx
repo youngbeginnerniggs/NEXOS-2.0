@@ -30,8 +30,8 @@ const PartnersPage: React.FC<PartnersPageProps> = ({ onNavigate }) => {
                         Partner with us to get a pre-vetted pipeline of action-oriented youth who have already proven they can take the first step.
                     </p>
                 </div>
-                <div className="md:w-1/2">
-                    <img src="https://picsum.photos/500/300?random=7" alt="Data chart" className="rounded-lg"/>
+                <div className="md:w-1/2 flex justify-center items-center">
+                    <img src="https://storage.googleapis.com/aai-web-samples/project-momentum-africa/partners-ivs.jpg" alt="A professional handshake sealing a partnership deal in a bright, modern office." className="rounded-lg w-full max-w-sm object-cover aspect-video"/>
                 </div>
             </div>
         </div>

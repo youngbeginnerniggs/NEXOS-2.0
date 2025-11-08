@@ -20,7 +20,20 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
     );
   }
 
-  const { displayName, role, email, avatarUrl, socials } = userProfile;
+  const { displayName, role, email, avatarUrl, socials, ivs } = userProfile;
+
+  const IVS_TIERS = [
+      { name: 'Bronze Signer', min: 0, max: 99, color: 'text-yellow-600' },
+      { name: 'Silver Initiator', min: 100, max: 499, color: 'text-gray-400' },
+      { name: 'Gold Momentum', min: 500, max: 999, color: 'text-yellow-400' },
+      { name: 'Platinum Leader', min: 1000, max: Infinity, color: 'text-cyan-400' }
+  ];
+
+  const currentTier = [...IVS_TIERS].reverse().find(tier => ivs >= tier.min) || IVS_TIERS[0];
+  const nextTierIndex = IVS_TIERS.findIndex(tier => tier.name === currentTier.name) + 1;
+  const nextTier = nextTierIndex < IVS_TIERS.length ? IVS_TIERS[nextTierIndex] : null;
+  
+  const progressToNextTier = nextTier ? Math.min(((ivs - currentTier.min) / (nextTier.min - currentTier.min)) * 100, 100) : 100;
 
   return (
     <div className="bg-background min-h-full py-12">
@@ -33,7 +46,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                 alt="Profile" 
                 className="w-32 h-32 rounded-full border-4 border-primary"
               />
-              <div className="flex-grow">
+              <div className="flex-grow text-center sm:text-left">
                 <h1 className="text-4xl font-bold text-text font-heading">{displayName}</h1>
                 <p className="text-primary font-semibold capitalize mt-1 font-heading">{role}</p>
                 <p className="text-text-secondary mt-2">{email}</p>
@@ -46,6 +59,42 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                 </button>
             </div>
             
+            {/* IVS Section */}
+            <div className="mt-8 border-t border-secondary pt-8">
+                <h2 className="text-2xl font-bold text-text mb-4 font-heading">Initiative Vetting Score (IVS)</h2>
+                <div className="flex items-center gap-4">
+                    <span className="text-5xl font-bold text-primary">{ivs}</span>
+                    <div>
+                        <span className={`text-xl font-bold ${currentTier.color}`}>{currentTier.name}</span>
+                        {nextTier && <p className="text-sm text-text-secondary">
+                            {nextTier.min - ivs} points to reach {nextTier.name}
+                        </p>}
+                    </div>
+                </div>
+                {nextTier ? (
+                    <div className="mt-4">
+                        <div className="w-full bg-secondary rounded-full h-4 relative">
+                            <div 
+                                className="bg-primary h-4 rounded-full flex items-center justify-end pr-2 text-xs font-bold text-background transition-all duration-500 ease-in-out" 
+                                style={{ width: `${progressToNextTier}%` }}
+                            >
+                                {progressToNextTier > 15 && `${progressToNextTier.toFixed(0)}%`}
+                            </div>
+                        </div>
+                        <div className="flex justify-between text-xs text-text-secondary mt-1">
+                            <span>{currentTier.min} IVS</span>
+                            <span>{nextTier.min} IVS</span>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="mt-4">
+                        <div className="w-full bg-primary rounded-full h-4 flex items-center justify-center">
+                            <span className="text-xs font-bold text-background">Max Tier Reached!</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+
             <div className="mt-8 border-t border-secondary pt-8">
                 <h2 className="text-2xl font-bold text-text mb-4 font-heading">Connect</h2>
                 <div className="flex items-center gap-4">

@@ -24,19 +24,19 @@ const HowItWorksPage: React.FC<HowItWorksPageProps> = ({ onNavigate }) => {
             <div className="mt-8 relative">
                  <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-secondary"></div>
                  <div className="relative flex flex-col md:flex-row justify-between items-center gap-8">
-                    <div className="text-center w-1/4">
+                    <div className="text-center w-full md:w-1/4">
                         <div className="bg-primary text-background rounded-full w-16 h-16 flex items-center justify-center mx-auto text-2xl font-bold">1</div>
                         <p className="mt-2 font-semibold text-text">Activation Talks</p>
                     </div>
-                     <div className="text-center w-1/4">
+                     <div className="text-center w-full md:w-1/4">
                         <div className="bg-primary text-background rounded-full w-16 h-16 flex items-center justify-center mx-auto text-2xl font-bold">2</div>
                         <p className="mt-2 font-semibold text-text">Initiative Hub</p>
                     </div>
-                     <div className="text-center w-1/4">
+                     <div className="text-center w-full md:w-1/4">
                         <div className="bg-primary text-background rounded-full w-16 h-16 flex items-center justify-center mx-auto text-2xl font-bold">3</div>
                         <p className="mt-2 font-semibold text-text">IVS Data</p>
                     </div>
-                     <div className="text-center w-1/4">
+                     <div className="text-center w-full md:w-1/4">
                         <div className="bg-primary text-background rounded-full w-16 h-16 flex items-center justify-center mx-auto text-2xl font-bold">4</div>
                         <p className="mt-2 font-semibold text-text">Real Opportunities</p>
                     </div>
@@ -48,8 +48,8 @@ const HowItWorksPage: React.FC<HowItWorksPageProps> = ({ onNavigate }) => {
         <div className="mt-20 space-y-16">
           {/* Pillar 1 */}
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="md:w-1/2">
-              <img src="https://picsum.photos/600/400?random=5" alt="Workshop" className="rounded-lg shadow-xl"/>
+            <div className="md:w-1/2 flex justify-center items-center">
+              <img src="https://storage.googleapis.com/aai-web-samples/project-momentum-africa/howitworks-activation.jpg" alt="A speaker passionately presenting to an engaged audience of young people." className="rounded-lg shadow-xl w-full max-w-md object-cover aspect-square"/>
             </div>
             <div className="md:w-1/2">
               <h3 className="text-2xl font-bold text-primary font-heading">Pillar 1: The Activation Talks (On-Ground Engine)</h3>
@@ -71,8 +71,8 @@ const HowItWorksPage: React.FC<HowItWorksPageProps> = ({ onNavigate }) => {
 
           {/* Pillar 2 */}
           <div className="flex flex-col md:flex-row-reverse items-center gap-8">
-            <div className="md:w-1/2">
-              <img src="https://picsum.photos/600/400?random=6" alt="Digital collaboration" className="rounded-lg shadow-xl"/>
+            <div className="md:w-1/2 flex justify-center items-center">
+              <img src="https://storage.googleapis.com/aai-web-samples/project-momentum-africa/howitworks-hub.jpg" alt="Two people collaborating over a laptop in a creative workspace." className="rounded-lg shadow-xl w-full max-w-md object-cover aspect-square"/>
             </div>
             <div className="md:w-1/2">
               <h3 className="text-2xl font-bold text-primary font-heading">Pillar 2: The Initiative Hub (Digital Vetting Platform)</h3>

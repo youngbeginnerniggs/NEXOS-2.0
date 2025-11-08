@@ -1,6 +1,6 @@
 import { collection, getDocs, doc, writeBatch } from 'firebase/firestore';
 import { db } from './config';
-import { Community } from '../types';
+import { Community, Opportunity } from '../types';
 
 const initialCommunities: Omit<Community, 'id'>[] = [
     {
@@ -23,7 +23,66 @@ const initialCommunities: Omit<Community, 'id'>[] = [
     }
 ];
 
-// This function checks if communities exist and seeds them if the collection is empty.
+const initialOpportunities: Omit<Opportunity, 'id'>[] = [
+    {
+        title: "Internship at Gov't of Botswana",
+        description: "A 3-month internship with the Ministry of Innovation, working on digital transformation projects.",
+        company: "Government of Botswana",
+        requiredIvs: 500,
+        url: "#",
+        category: "Internship"
+    },
+    {
+        title: "Seed Funding Pitch Session",
+        description: "An exclusive opportunity to pitch your tech startup idea to a panel of venture capitalists.",
+        company: "Africa Ventures Inc.",
+        requiredIvs: 1000,
+        url: "#",
+        category: "Funding"
+    },
+    {
+        title: "Mentorship with Kenna Adebayo",
+        description: "A one-on-one mentorship program for aspiring social entrepreneurs. Limited to 5 participants.",
+        company: "Social Impact & NGOs Community",
+        requiredIvs: 250,
+        url: "#",
+        category: "Mentorship"
+    },
+    {
+        title: "PMA Contributor Badge",
+        description: "Get recognized as a key contributor in the PMA community, with special access to beta features.",
+        company: "Project Momentum Africa",
+        requiredIvs: 100,
+        url: "#",
+        category: "Community"
+    },
+    {
+        title: "Content Creator Grant",
+        description: "Receive a small grant and production support to create a short documentary about your community project.",
+        company: "Creative & Media Hub",
+        requiredIvs: 750,
+        url: "#",
+        category: "Funding"
+    },
+    {
+        title: "Junior Developer Apprenticeship",
+        description: "A paid 6-month apprenticeship with a leading SaaS company in Nairobi. For high-potential coders.",
+        company: "SaaS Solutions Ltd.",
+        requiredIvs: 1200,
+        url: "#",
+        category: "Internship"
+    },
+    {
+        title: "Community Moderator Role",
+        description: "Become a leader in the PMA Hub. Help guide conversations and welcome new members.",
+        company: "Project Momentum Africa",
+        requiredIvs: 150,
+        url: "#",
+        category: "Community"
+    }
+];
+
+
 export const seedCommunities = async () => {
     const communitiesCollectionRef = collection(db, 'communities');
     try {
@@ -32,7 +91,7 @@ export const seedCommunities = async () => {
             console.log("No communities found. Seeding initial data...");
             const batch = writeBatch(db);
             initialCommunities.forEach((communityData) => {
-                const docRef = doc(communitiesCollectionRef); // Automatically generate an ID
+                const docRef = doc(communitiesCollectionRef);
                 batch.set(docRef, communityData);
             });
             await batch.commit();
@@ -40,5 +99,24 @@ export const seedCommunities = async () => {
         }
     } catch (error) {
         console.error("Error seeding communities: ", error);
+    }
+};
+
+export const seedOpportunities = async () => {
+    const opportunitiesCollectionRef = collection(db, 'opportunities');
+    try {
+        const querySnapshot = await getDocs(opportunitiesCollectionRef);
+        if (querySnapshot.empty) {
+            console.log("No opportunities found. Seeding initial data...");
+            const batch = writeBatch(db);
+            initialOpportunities.forEach((oppData) => {
+                const docRef = doc(opportunitiesCollectionRef);
+                batch.set(docRef, oppData);
+            });
+            await batch.commit();
+            console.log("Initial opportunities seeded successfully.");
+        }
+    } catch (error) {
+        console.error("Error seeding opportunities: ", error);
     }
 };

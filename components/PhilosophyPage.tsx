@@ -16,8 +16,8 @@ const PhilosophyPage: React.FC = () => {
         <div className="mt-16 space-y-16">
           {/* Core Philosophy */}
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <div className="md:w-1/2">
-              <img src="https://picsum.photos/600/400?random=3" alt="Student writing" className="rounded-lg shadow-xl"/>
+            <div className="md:w-1/2 flex justify-center items-center">
+              <img src="https://storage.googleapis.com/aai-web-samples/project-momentum-africa/philosophy-story.jpg" alt="A young man presenting his ideas on a glass whiteboard to his colleagues." className="rounded-lg shadow-xl w-full max-w-md object-cover aspect-square"/>
             </div>
             <div className="md:w-1/2">
               <h3 className="text-2xl font-bold text-primary font-heading">The Full Story: The Power of the Signature</h3>
@@ -32,8 +32,8 @@ const PhilosophyPage: React.FC = () => {
           
            {/* Target Impact */}
            <div className="flex flex-col md:flex-row-reverse items-center gap-8">
-            <div className="md:w-1/2">
-              <img src="https://picsum.photos/600/400?random=4" alt="Collaboration" className="rounded-lg shadow-xl"/>
+            <div className="md:w-1/2 flex justify-center items-center">
+              <img src="https://storage.googleapis.com/aai-web-samples/project-momentum-africa/philosophy-impact.jpg" alt="A diverse group of young professionals celebrating a success in a modern office." className="rounded-lg shadow-xl w-full max-w-md object-cover aspect-square"/>
             </div>
             <div className="md:w-1/2">
               <h3 className="text-2xl font-bold text-primary font-heading">Our Target Impact</h3>

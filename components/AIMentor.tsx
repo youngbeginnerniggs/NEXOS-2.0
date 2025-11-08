@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { refineIdeaWithAI } from '../services/geminiService';
+import { AuthContext } from '../context/AuthContext';
+import { updateUserIvs, IVS_POINTS } from '../firebase/ivs';
 import { SparklesIcon } from './icons/SparklesIcon';
+import { Page } from '../types';
 
 interface AIMentorProps {
   communityName: string;
   aiSystemInstruction: string;
+  onNavigate: (page: Page) => void;
 }
 
-const AIMentor: React.FC<AIMentorProps> = ({ communityName, aiSystemInstruction }) => {
+const AIMentor: React.FC<AIMentorProps> = ({ communityName, aiSystemInstruction, onNavigate }) => {
   const [rawIdea, setRawIdea] = useState('');
   const [refinedPlan, setRefinedPlan] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const { user, refreshUserProfile } = useContext(AuthContext);
 
   const handleRefine = async () => {
     if (!rawIdea.trim()) {
@@ -24,6 +29,10 @@ const AIMentor: React.FC<AIMentorProps> = ({ communityName, aiSystemInstruction 
     try {
       const result = await refineIdeaWithAI(rawIdea, aiSystemInstruction);
       setRefinedPlan(result);
+      if (user) {
+        await updateUserIvs(user.uid, IVS_POINTS.REFINE_IDEA);
+        await refreshUserProfile();
+      }
     } catch (err) {
       setError('An unexpected error occurred. Please try again.');
       console.error(err);
@@ -33,7 +42,7 @@ const AIMentor: React.FC<AIMentorProps> = ({ communityName, aiSystemInstruction 
   };
 
   return (
-    <div className="bg-surface rounded-lg shadow-md p-6 sticky top-24">
+    <div className="bg-surface rounded-lg shadow-md p-6 sticky top-24 relative">
       <div className="flex items-center gap-3">
         <SparklesIcon className="w-8 h-8 text-primary" />
         <div>
@@ -56,13 +65,13 @@ const AIMentor: React.FC<AIMentorProps> = ({ communityName, aiSystemInstruction 
           placeholder="e.g., I want to start a tutoring service for kids in my village..."
           value={rawIdea}
           onChange={(e) => setRawIdea(e.target.value)}
-          disabled={isLoading}
+          disabled={isLoading || !user}
         />
       </div>
 
       <button
         onClick={handleRefine}
-        disabled={isLoading}
+        disabled={isLoading || !user}
         className="mt-4 w-full bg-primary text-background font-bold py-3 px-4 rounded-lg hover:opacity-80 transition duration-300 flex items-center justify-center disabled:bg-secondary disabled:cursor-not-allowed font-heading"
       >
         {isLoading ? (
@@ -87,6 +96,17 @@ const AIMentor: React.FC<AIMentorProps> = ({ communityName, aiSystemInstruction 
             className="prose prose-sm max-w-none text-text-secondary"
             dangerouslySetInnerHTML={{ __html: refinedPlan.replace(/\n/g, '<br />') }}
           />
+        </div>
+      )}
+      {!user && (
+        <div className="absolute inset-0 bg-surface/80 backdrop-blur-sm flex flex-col items-center justify-center rounded-lg p-4 text-center">
+            <p className="text-text font-bold text-lg">Ready to refine your idea?</p>
+            <button 
+                onClick={() => onNavigate('signup')}
+                className="mt-4 bg-primary text-background font-bold py-2 px-6 rounded-full hover:opacity-80 transition duration-300"
+            >
+                Sign Up to Use the Mentor
+            </button>
         </div>
       )}
     </div>

@@ -7,7 +7,8 @@ interface ReplyCardProps {
 
 const ReplyCard: React.FC<ReplyCardProps> = ({ reply }) => {
 
-    const replyTimestamp = reply.timestamp?.toDate().toLocaleTimeString() + ' on ' + reply.timestamp?.toDate().toLocaleDateString() || '...';
+    const timestampDate = reply.timestamp ? new Date(reply.timestamp) : null;
+    const replyTimestamp = timestampDate ? `${timestampDate.toLocaleTimeString()} on ${timestampDate.toLocaleDateString()}` : '...';
 
     return (
         <div className="flex items-start space-x-3">

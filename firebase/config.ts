@@ -1,8 +1,9 @@
-// Fix: Use modular imports for Firebase v9+ as other imports are already using it.
-// FIX: Changed import to use named exports for Firebase v9 modular SDK to resolve member not found errors.
-import { initializeApp, FirebaseApp } from 'firebase/app';
+// Fix: Module '"firebase/app"' has no exported member 'initializeApp' or 'FirebaseApp'.
+// Switched to a namespace import to work around a module resolution issue.
+import * as firebase from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 // Your web app's Firebase configuration
 // IMPORTANT: Replace with your actual Firebase project configuration
@@ -17,12 +18,12 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-// Fix: Use initializeApp and FirebaseApp from modular imports.
-// FIX: Use initializeApp directly and FirebaseApp as a type from named imports.
-const app: FirebaseApp = initializeApp(firebaseConfig);
+// Fix: Updated to use `initializeApp` and `FirebaseApp` from the `firebase` namespace.
+const app: firebase.FirebaseApp = firebase.initializeApp(firebaseConfig);
 
 // Initialize Firebase services
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-export { app, auth, db };
+export { app, auth, db, storage };

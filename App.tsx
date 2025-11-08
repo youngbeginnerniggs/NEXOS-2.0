@@ -5,12 +5,12 @@ import HomePage from './components/HomePage';
 import PhilosophyPage from './components/PhilosophyPage';
 import HowItWorksPage from './components/HowItWorksPage';
 import PartnersPage from './components/PartnersPage';
-import BlogPage from './components/BlogPage';
+import CommunityPage from './components/CommunityPage';
 import InitiativeHub from './components/InitiativeHub';
-import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
 import ProfilePage from './components/ProfilePage';
 import EditProfilePage from './components/EditProfilePage';
+import OpportunitiesPage from './components/OpportunitiesPage';
 import { Page } from './types';
 import { AuthContext } from './context/AuthContext';
 
@@ -19,11 +19,7 @@ const App: React.FC = () => {
   const { user } = useContext(AuthContext);
 
   const handleNavigate = (page: Page) => {
-    // Prevent access to certain pages if not logged in
-    if (!user && (page === 'hub' || page === 'profile' || page === 'edit-profile')) {
-      setCurrentPage('login');
-      return;
-    }
+    // No more protected pages, all are viewable in a "trial" mode.
     setCurrentPage(page);
     window.scrollTo(0, 0); // Scroll to top on page change
   };
@@ -38,18 +34,19 @@ const App: React.FC = () => {
         return <HowItWorksPage onNavigate={handleNavigate} />;
       case 'partners':
         return <PartnersPage onNavigate={handleNavigate} />;
-      case 'blog':
-        return <BlogPage />;
+      case 'community':
+        return <CommunityPage onNavigate={handleNavigate} />; // Always render, CTAs inside will handle signup
       case 'hub':
-        return user ? <InitiativeHub /> : <LoginPage onNavigate={handleNavigate} />;
-      case 'login':
-        return <LoginPage onNavigate={handleNavigate} />;
+        return <InitiativeHub onNavigate={handleNavigate} />; // Always render, CTAs inside will handle signup
+      case 'opportunities':
+        return <OpportunitiesPage />; // Always render, locking logic is handled inside
       case 'signup':
         return <SignUpPage onNavigate={handleNavigate} />;
        case 'profile':
-        return user ? <ProfilePage onNavigate={handleNavigate} /> : <LoginPage onNavigate={handleNavigate} />;
+        // If user exists, show profile. If not, prompt to sign up to view/create a profile.
+        return user ? <ProfilePage onNavigate={handleNavigate} /> : <SignUpPage onNavigate={handleNavigate} />;
       case 'edit-profile':
-        return user ? <EditProfilePage onNavigate={handleNavigate} /> : <LoginPage onNavigate={handleNavigate} />;
+        return user ? <EditProfilePage onNavigate={handleNavigate} /> : <SignUpPage onNavigate={handleNavigate} />;
       default:
         return <HomePage onNavigate={handleNavigate} />;
     }
