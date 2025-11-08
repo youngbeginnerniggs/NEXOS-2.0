@@ -72,6 +72,7 @@ const InitiativeHub: React.FC<InitiativeHubProps> = ({ onNavigate }) => {
             ...data,
             id: doc.id,
             timestamp: data.timestamp?.toMillis() || Date.now(),
+            collaboratorIds: data.collaboratorIds || [],
         } as Post);
       });
       setPosts(postsData);
@@ -138,6 +139,7 @@ const InitiativeHub: React.FC<InitiativeHubProps> = ({ onNavigate }) => {
         idea: newIdea,
         timestamp: serverTimestamp(),
         collaborators: 0,
+        collaboratorIds: [],
         likes: 0,
         ...(imageUrl && { imageUrl }),
       });

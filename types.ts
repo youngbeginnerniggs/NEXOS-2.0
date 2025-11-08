@@ -39,6 +39,7 @@ export interface Post {
   idea: string;
   timestamp: number;
   collaborators: number;
+  collaboratorIds: string[];
   likes: number;
   imageUrl?: string;
 }

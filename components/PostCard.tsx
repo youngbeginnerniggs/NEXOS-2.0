@@ -5,7 +5,7 @@ import { PencilIcon } from './icons/PencilIcon';
 import ReplyCard from './Reply';
 import { AuthContext } from '../context/AuthContext';
 import { db } from '../firebase/config';
-import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, increment } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { updateUserIvs, IVS_POINTS } from '../firebase/ivs';
 
 interface PostCardProps {
@@ -17,8 +17,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, onNavigate }) => {
   const [showReplies, setShowReplies] = useState(false);
   const [replies, setReplies] = useState<Reply[]>([]);
   const [newReply, setNewReply] = useState('');
-  const [isCollaborating, setIsCollaborating] = useState(false);
+  const [isSubmittingAction, setIsSubmittingAction] = useState(false);
   const { user, userProfile, refreshUserProfile } = useContext(AuthContext);
+
+  const [isJoined, setIsJoined] = useState(user ? post.collaboratorIds?.includes(user.uid) : false);
+
+  useEffect(() => {
+    setIsJoined(user ? post.collaboratorIds?.includes(user.uid) : false);
+  }, [post.collaboratorIds, user]);
+
 
   useEffect(() => {
     if (!showReplies) return;
@@ -60,20 +67,31 @@ const PostCard: React.FC<PostCardProps> = ({ post, onNavigate }) => {
     setNewReply('');
   };
 
-  const handleJoinCollaboration = async () => {
+  const handleToggleCollaboration = async () => {
     if (!user || !userProfile) return;
-    setIsCollaborating(true);
+    setIsSubmittingAction(true);
     try {
         const postRef = doc(db, 'posts', post.id);
-        await updateDoc(postRef, {
-            collaborators: increment(1)
-        });
-        await updateUserIvs(user.uid, IVS_POINTS.JOIN_COLLABORATION);
+        if (isJoined) {
+            // User is leaving
+            await updateDoc(postRef, {
+                collaborators: increment(-1),
+                collaboratorIds: arrayRemove(user.uid)
+            });
+            await updateUserIvs(user.uid, -IVS_POINTS.JOIN_COLLABORATION);
+        } else {
+            // User is joining
+            await updateDoc(postRef, {
+                collaborators: increment(1),
+                collaboratorIds: arrayUnion(user.uid)
+            });
+            await updateUserIvs(user.uid, IVS_POINTS.JOIN_COLLABORATION);
+        }
         await refreshUserProfile();
     } catch (error) {
-        console.error("Error joining collaboration:", error);
+        console.error("Error toggling collaboration:", error);
     } finally {
-        setIsCollaborating(false);
+        setIsSubmittingAction(false);
     }
   };
 
@@ -113,11 +131,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, onNavigate }) => {
           </div>
           <div className="flex items-center gap-4">
              <button
-                onClick={handleJoinCollaboration}
-                disabled={!user || isCollaborating}
-                className="bg-secondary text-text font-semibold py-2 px-4 rounded-full hover:bg-primary hover:text-background transition duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleToggleCollaboration}
+                disabled={!user || isSubmittingAction}
+                className={`font-semibold py-2 px-4 rounded-full transition duration-300 text-sm disabled:opacity-50 disabled:cursor-not-allowed ${
+                    isJoined 
+                    ? 'bg-primary text-background' 
+                    : 'bg-secondary text-text hover:bg-primary hover:text-background'
+                }`}
             >
-                Join
+                {isJoined ? 'Leave' : 'Join'}
             </button>
             <button onClick={() => setShowReplies(!showReplies)} className="flex items-center text-sm font-semibold text-primary hover:opacity-80 transition">
               <PencilIcon className="w-4 h-4 mr-1" />

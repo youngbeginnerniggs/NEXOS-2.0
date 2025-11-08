@@ -40,6 +40,7 @@ const CommunityPage: React.FC<CommunityPageProps> = ({ onNavigate }) => {
           ...data,
           id: doc.id,
           timestamp: data.timestamp?.toMillis() || Date.now(),
+          collaboratorIds: data.collaboratorIds || [],
         } as Post);
       });
       setPosts(postsData);
